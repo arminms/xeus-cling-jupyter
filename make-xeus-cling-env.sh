@@ -153,7 +153,7 @@ git clone https://github.com/jupyter-xeus/xeus-cling.git
 cd xeus-cling/
 git checkout 0.15.3
 
-# # fix compilation errors with llvm16 (https://github.com/jupyter-xeus/xeus-cling/pull/524/files)
+# fix compilation errors with llvm16 (https://github.com/jupyter-xeus/xeus-cling/pull/524/files)
 # sed -i -e 's/"--src-root"//g' CMakeLists.txt
 # sed -i -e 's/HeaderSearchOpts,/&CI->getVirtualFileSystem(), HeaderSearchOpts,/g' src/xmagics/executable.cpp
 # sed -i -e 's/*Context)/*m_interpreter.getLLVMContext())/g' src/xmagics/executable.cpp
@@ -162,6 +162,11 @@ sed -i -e 's/getDataLayoutString()/getDataLayoutString();/g' src/xmagics/executa
 # sed -i -e 's/{llvm::NoneType::None,/std::nullopt,/g' src/xmagics/executable.cpp
 sed -i -e 's/simplisticCastAs/castAs/g' src/xmagics/execution.cpp
 sed -i -e 's/code.str()/std::string(code.str())/g' src/xmime_internal.hpp
+
+# patch to install new kernel files
+rm -rf share/jupyter/kernels/*
+cp -r $BUILD_DIR/kernels/* share/jupyter/kernels/
+patch -u CMakeLists.txt $BUILD_DIR/patches/kernels.diff
 
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCling_DIR=$INSTALL_DIR/tools/cling/lib/cmake/cling
 cmake --build build -j && cmake --install build

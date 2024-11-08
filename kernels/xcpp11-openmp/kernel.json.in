@@ -1,0 +1,11 @@
+{
+  "display_name": "C++11-OpenMP",
+  "argv": [
+      "@XEUS_CLING_KERNELSPEC_PATH@/xcpp",
+      "-f",
+      "{connection_file}",
+      "-std=c++11",
+      "-fopenmp"
+  ],
+  "language": "C++11"
+}

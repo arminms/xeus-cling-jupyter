@@ -1,0 +1,30 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -35,20 +35,13 @@
+     set(XEUS_CLING_KERNELSPEC_PATH "${CMAKE_INSTALL_FULL_BINDIR}/")
+ endif ()
+ 
+-configure_file (
+-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp11/kernel.json.in"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp11/kernel.json"
+-)
+-
+-configure_file (
+-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp14/kernel.json.in"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp14/kernel.json"
+-)
+-
+-configure_file (
+-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp17/kernel.json.in"
+-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp17/kernel.json"
+-)
++file(GLOB_RECURSE files ${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/*.in)
++foreach(filename ${files})
++  string(LENGTH ${filename} length)
++  math(EXPR length "${length}-3")
++  string(SUBSTRING ${filename} 0 ${length} json_filename)
++  configure_file("${json_filename}.in" "${json_filename}")
++endforeach()
+ 
+ #######################
+ # Rely on llvm-config #
