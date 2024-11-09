@@ -1,10 +1,31 @@
 
 #!/usr/bin/env bash
 #
-# bash script for building/installing xeus-cling 0.15.3 from source in a python
-# virtual environment
-#
 # Copyright (c) 2024 Armin Sobhani (arminms@gmail.com)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# A bash script for building/installing xeus-cling 0.15.3 from source in a 
+# python virtual environment.
+#
+# Usage:
+#   $ ./make-xeus-cling-env.sh [VIRTUAL_ENV_PATH=[~/xeus-cling-env]]
 #
 if [ $# -eq 1 ]; then
   INSTALL_DIR=$1
@@ -20,9 +41,11 @@ cp -r kernels patches build
 BUILD_DIR=$PWD
 
 # exit on error and verbose
+#
 set -ex
 
 # create the python virtual environment and install dependencies
+#
 virtualenv $INSTALL_DIR
 source $INSTALL_DIR/bin/activate
 pip install --upgrade pip
@@ -31,6 +54,7 @@ pip install ipython
 pip install ipykernel
 
 # llvm13
+#
 cd $BUILD_DIR
 if [ ! -d "llvm-project" ]; then
   git clone https://github.com/root-project/llvm-project.git
@@ -39,6 +63,7 @@ cd llvm-project/
 git checkout cling-llvm13
 
 # cling v1.0~dev
+#
 cd $BUILD_DIR
 if [ ! -d "cling" ]; then
   git clone https://github.com/root-project/cling.git
@@ -74,6 +99,7 @@ mkdir -p $INSTALL_DIR/include/cling
 cp -r $CH/Interpreter $CH/MetaProcessor $CH/UserInterface $CH/Utils $INSTALL_DIR/include/cling
 
 # nlohmann/json v3.6.1
+#
 cd $BUILD_DIR
 git clone https://github.com/nlohmann/json.git
 cd json/
@@ -82,6 +108,7 @@ cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCMAKE_BUILD_TYPE=Relea
 cmake --build build -j && cmake --install build
 
 # xtl 0.7.5
+#
 cd $BUILD_DIR
 git clone https://github.com/xtensor-stack/xtl.git
 cd xtl/
@@ -90,6 +117,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_D
 cmake --build build -j && cmake --install build
 
 # xeus 3.2.0
+#
 cd $BUILD_DIR
 git clone https://github.com/jupyter-xeus/xeus.git
 cd xeus/
@@ -98,6 +126,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_D
 cmake --build build -j && cmake --install build
 
 # libzmq v4.3.4
+#
 cd $BUILD_DIR
 git clone https://github.com/zeromq/libzmq.git
 cd libzmq/
@@ -106,6 +135,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_D
 cmake --build build -j && cmake --install build
 
 # cppzmq v4.8.1
+#
 cd $BUILD_DIR
 git clone https://github.com/zeromq/cppzmq.git
 cd cppzmq/
@@ -114,6 +144,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_D
 cmake --build build -j && cmake --install build
 
 # xeus-zmq 1.3.0
+#
 cd $BUILD_DIR
 git clone https://github.com/jupyter-xeus/xeus-zmq.git
 cd xeus-zmq/
@@ -122,6 +153,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_D
 cmake --build build -j && cmake --install build
 
 # pugixml v1.8.1
+#
 cd $BUILD_DIR
 git clone https://github.com/zeux/pugixml.git
 cd pugixml/
@@ -130,6 +162,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_D
 cmake --build build -j && cmake --install build
 
 # argparse v2.9
+#
 cd $BUILD_DIR
 git clone https://github.com/p-ranav/argparse.git
 cd argparse/
@@ -138,29 +171,29 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_D
 cmake --build build -j && cmake --install build
 
 # xeus-cling 0.15.3
+#
 cd $BUILD_DIR
 git clone https://github.com/jupyter-xeus/xeus-cling.git
 cd xeus-cling/
 git checkout 0.15.3
-
 # fix compilation errors with llvm13
 sed -i -e 's/.getDataLayout();/.getDataLayoutString()/g' src/xmagics/executable.cpp
 sed -i -e 's/getDataLayoutString()/getDataLayoutString();/g' src/xmagics/executable.cpp
 sed -i -e 's/simplisticCastAs/castAs/g' src/xmagics/execution.cpp
 sed -i -e 's/code.str()/std::string(code.str())/g' src/xmime_internal.hpp
-
 # patch to install new kernel files
 rm -rf share/jupyter/kernels/*
 cp -r $BUILD_DIR/kernels/* share/jupyter/kernels/
 patch -u CMakeLists.txt $BUILD_DIR/patches/kernels.diff
-
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCling_DIR=$INSTALL_DIR/tools/cling/lib/cmake/cling
 cmake --build build -j && cmake --install build
 
 # deactivate the virtual environment
+#
 deactivate
 
 # print the installation path
+#
 set +x
 echo "xeus-cling 0.15.3 has been successfully installed in $INSTALL_DIR"
 echo "run 'source $INSTALL_DIR/bin/activate' to activate the virtual environment"
