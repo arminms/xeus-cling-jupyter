@@ -16,6 +16,7 @@ else
 fi
 
 mkdir -p build && cd build
+cp -r kernels patches build
 export BUILD_DIR=$PWD
 
 # exit on error and verbose
@@ -175,6 +176,7 @@ cmake --build build -j && cmake --install build
 deactivate
 
 # print the installation path
+set +x
 echo "xeus-cling 0.15.3 has been successfully installed in $INSTALL_DIR"
 echo "run 'source $INSTALL_DIR/bin/activate' to activate the virtual environment"
 echo "and then run 'jupyter lab' to start jupyter lab"
