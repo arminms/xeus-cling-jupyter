@@ -1,2 +1,2 @@
-# xeus-cling-container
-xeus-cling container and bash script to install it in a virtual environment from source
+# xeus-cling-env
+A bash script to build and install [xeus-cling](https://github.com/jupyter-xeus/xeus-cling) in a python virtual environment from source.
