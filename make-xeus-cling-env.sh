@@ -48,10 +48,7 @@ set -ex
 #
 virtualenv $INSTALL_DIR
 source $INSTALL_DIR/bin/activate
-pip install --upgrade pip
-pip install jupyter
-pip install ipython
-pip install ipykernel
+pip install --upgrade pip && pip install jupyter ipython ipykernel
 
 # llvm13
 #
