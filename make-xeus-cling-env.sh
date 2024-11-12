@@ -36,8 +36,7 @@ else
   exit 1
 fi
 
-mkdir -p build && cd build
-cp -r kernels patches build
+mkdir -p build && cp -r kernels patches build && cd build
 BUILD_DIR=$PWD
 
 # exit on error and verbose
