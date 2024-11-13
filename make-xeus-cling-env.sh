@@ -34,6 +34,7 @@ virtual environment (optional) including jupyter, ipython, and ipykernel.
 Needs 'realpath' to be installed (e.g. sudo apt-get install realpath).
 
   -b  FOLDER    build directory (default: ./build)
+  -c            clean the build directory after installation
   -n  N         number of threads to build cling (default: 2)
   -h            show this help message
   -r            resume the build from the last step
@@ -48,10 +49,13 @@ N=2
 
 # parse the command line arguments
 #
-while getopts ":b:n:rs" o; do
+while getopts ":b:cn:rs" o; do
     case "${o}" in
         b)
             BUILD_DIR=$(realpath ${OPTARG})
+            ;;
+        c)
+            CLEAN=1
             ;;
         n)
             N=${OPTARG}
@@ -290,9 +294,16 @@ fi
 # print the installation path
 #
 set +x
+if [ ! -z "${CLEAN}" ] ; then
+  rm -rf $BUILD_DIR
+fi
+echo
 echo "xeus-cling 0.15.3 has been successfully installed in $INSTALL_DIR"
 if [ -z "${SKIP_VENV}" ] ; then
   echo "run 'source $INSTALL_DIR/bin/activate' to activate the virtual environment"
   echo "and then 'jupyter lab' to start jupyter"
 fi
-echo "run 'rm -rf $BUILD_DIR' to remove the build directory"
+if [ -z "${CLEAN}" ] ; then
+  echo "run 'rm -rf $BUILD_DIR' to remove the build directory"
+fi
+echo
