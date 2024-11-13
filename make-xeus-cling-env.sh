@@ -28,7 +28,7 @@
 #   $ ./make-xeus-cling-env.sh [VIRTUAL_ENV_PATH=[~/xeus-cling-env]]
 #
 if [ $# -eq 1 ]; then
-  INSTALL_DIR=$1
+  INSTALL_DIR=$(realpath $1)
 elif [ $# -eq 0 ]; then
   INSTALL_DIR=~/xeus-cling-env
 else
