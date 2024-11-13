@@ -22,32 +22,90 @@
 # SOFTWARE.
 #
 # A bash script for building/installing xeus-cling 0.15.3 from source in a 
-# python virtual environment.
+# python virtual environment. The script requires 'realpath' to be installed.
 #
-# Usage:
-#   $ ./make-xeus-cling-env.sh [VIRTUAL_ENV_PATH=[~/xeus-cling-env]]
-#
-if [ $# -eq 1 ]; then
-  INSTALL_DIR=$(realpath $1)
-elif [ $# -eq 0 ]; then
-  INSTALL_DIR=~/xeus-cling-env
-else
-  echo "usage: $0 [VIRTUAL_ENV_PATH=[~/xeus-cling-env]]"
-  exit 1
-fi
+usage()
+{
+    cat << EOF
+Usage: $0 [OPTION]... [DIRECTORY(=~/xeus-cling-env)]
 
-mkdir -p build && cp -r kernels patches build && cd build
-BUILD_DIR=$PWD
+Build and install xeus-cling 0.15.3 from source in DIRECTORY, with a python
+virtual environment (optional) including jupyter, ipython, and ipykernel.
+Needs 'realpath' to be installed (e.g. sudo apt-get install realpath).
+
+  -b  FOLDER    build directory (default: ./build)
+  -n  N         number of threads to build cling (default: 2)
+  -h            show this help message
+  -r            resume the build from the last step
+  -s            skip creating python virtual environment
+
+EOF
+}
+
+# setting default values
+#
+N=2
+
+# parse the command line arguments
+#
+while getopts ":b:n:rs" o; do
+    case "${o}" in
+        b)
+            BUILD_DIR=$(realpath ${OPTARG})
+            ;;
+        n)
+            N=${OPTARG}
+            ;;
+        h)
+            usage
+            ;;
+        s)
+            SKIP_VENV=1
+            ;;
+        r)
+            RESUME=1
+            ;;
+        *)
+            usage && exit 1
+            ;;
+    esac
+done
+shift $((OPTIND-1))
 
 # exit on error and verbose
 #
 set -ex
 
-# create the python virtual environment and install dependencies
+# set the installation directory
 #
-virtualenv $INSTALL_DIR
-source $INSTALL_DIR/bin/activate
-pip install --upgrade pip && pip install jupyter ipython ipykernel
+if [ -z "${1}" ] ; then
+  if [ -z "${SKIP_VENV}" ] ; then
+    mkdir -p ~/xeus-cling && INSTALL_DIR=~/xeus-cling
+  else
+    INSTALL_DIR=~/xeus-cling-env
+  fi
+else
+  INSTALL_DIR=$(realpath $1)
+fi
+
+# set the build directory
+#
+if [ -z "${BUILD_DIR}" ] ; then
+  mkdir -p build && cp -r kernels patches build && cd build && BUILD_DIR=$PWD
+else
+  cp -r kernels patches $BUILD_DIR && cd $BUILD_DIR
+fi
+
+# create the python virtual environment and install dependencies if needed
+#
+if [ -z "${SKIP_VENV}" ] ; then
+  virtualenv $INSTALL_DIR
+  source $INSTALL_DIR/bin/activate
+  pip install --upgrade pip && pip install jupyter ipython ipykernel
+else
+  mkdir -p $INSTALL_DIR/bin $INSTALL_DIR/share/jupyter/kernels/
+  export PATH=$INSTALL_DIR/bin:$PATH
+fi
 
 # llvm13
 #
@@ -84,9 +142,8 @@ cmake -DLLVM_EXTERNAL_PROJECTS=cling \
       -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
       -DCMAKE_BUILD_TYPE=Release \
       $BUILD_DIR/llvm-project/llvm
-cmake --build . --target cling llvm-config -j 4
+cmake --build . --target cling llvm-config -j $N
 make -j install-clang-headers install-clang-resource-headers install-llvm-headers
-#export PATH=$INSTALL_DIR/bin:$PATH
 cp bin/* $INSTALL_DIR/bin
 cp lib/*.a $INSTALL_DIR/lib
 cp -r lib/cmake $INSTALL_DIR/lib
@@ -184,14 +241,18 @@ patch -u CMakeLists.txt $BUILD_DIR/patches/kernels.diff
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCling_DIR=$INSTALL_DIR/tools/cling/lib/cmake/cling
 cmake --build build -j && cmake --install build
 
-# deactivate the virtual environment
+# deactivate the virtual environment if needed
 #
-deactivate
+if [ -z "${SKIP_VENV}" ] ; then
+  deactivate
+fi
 
 # print the installation path
 #
 set +x
 echo "xeus-cling 0.15.3 has been successfully installed in $INSTALL_DIR"
-echo "run 'source $INSTALL_DIR/bin/activate' to activate the virtual environment"
-echo "and then run 'jupyter lab' to start jupyter lab"
+if [ -z "${SKIP_VENV}" ] ; then
+  echo "run 'source $INSTALL_DIR/bin/activate' to activate the virtual environment"
+  echo "and then 'jupyter lab' to start jupyter"
+fi
 echo "run 'rm -rf $BUILD_DIR' to remove the build directory"
