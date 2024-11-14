@@ -31,7 +31,7 @@ Usage: $0 [OPTION]... [DIRECTORY(=~/xeus-cling(-env))]
 
 Build and install xeus-cling 0.15.3 from source in DIRECTORY, with a python
 virtual environment (optional) including jupyter, ipython, and ipykernel.
-Needs 'realpath' to be installed (e.g. sudo apt-get install realpath).
+Needs CMake 3.12+ and 'realpath' to work (e.g. sudo apt-get install realpath).
 
   -b  FOLDER    build directory (default: ./build)
   -c            clean the build directory after installation
