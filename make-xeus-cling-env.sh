@@ -39,6 +39,7 @@ Needs 'realpath' to be installed (e.g. sudo apt-get install realpath).
   -h            show this help message
   -r            resume the build from the last step
   -s            skip creating python virtual environment
+  -x            install extra libraries (xproperty, xwidgets, xtensor)
 
 EOF
 }
@@ -49,7 +50,7 @@ N=2
 
 # parse the command line arguments
 #
-while getopts ":b:cn:rs" o; do
+while getopts ":b:cn:rsx" o; do
     case "${o}" in
         b)
             BUILD_DIR=$(realpath ${OPTARG})
@@ -68,6 +69,9 @@ while getopts ":b:cn:rs" o; do
             ;;
         r)
             RESUME=1
+            ;;
+        x)
+            EXTRA_LIBS=1
             ;;
         *)
             usage && exit 1
@@ -285,6 +289,47 @@ if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/bin/xcpp ]); 
   cmake --build build -j && cmake --install build
 fi
 
+# install extra libraries if needed
+#
+if [ ! -z "${EXTRA_LIBS}" ] ; then
+  # xproperty 0.11.0
+  #
+  if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/include/xproperty/xproperty.hpp ]); then
+    cd $BUILD_DIR
+    if [ ! -d "xproperty" ]; then
+      git clone https://github.com/jupyter-xeus/xproperty.git
+    fi
+    cd xproperty/
+    git checkout 0.11.0
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
+    cmake --build build -j && cmake --install build
+  fi
+  # xwidgets 0.28.1
+  #
+  if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/include/xwidgets/xwidget.hpp ]); then
+    cd $BUILD_DIR
+    if [ ! -d "xwidgets" ]; then
+      git clone https://github.com/jupyter-xeus/xwidgets.git
+    fi
+    cd xwidgets/
+    git checkout 0.28.1
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
+    cmake --build build -j && cmake --install build
+  fi
+  # xtensor 0.25.0
+  #
+  if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/include/xtensor/xtensor.hpp ]); then
+    cd $BUILD_DIR
+    if [ ! -d "xtensor" ]; then
+      git clone https://github.com/xtensor-stack/xtensor.git
+    fi
+    cd xtensor/
+    git checkout 0.25.0
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
+    cmake --build build -j && cmake --install build
+  fi 
+fi
+
 # deactivate the virtual environment if needed
 #
 if [ -z "${SKIP_VENV}" ] ; then
@@ -304,6 +349,6 @@ if [ -z "${SKIP_VENV}" ] ; then
   echo "and then 'jupyter lab' to start jupyter"
 fi
 if [ -z "${CLEAN}" ] ; then
-  echo "run 'rm -rf $BUILD_DIR' to remove the build directory"
+  echo "run 'rm -rf $BUILD_DIR' to remove the build directory if you don't need it anymore"
 fi
 echo
