@@ -27,7 +27,7 @@
 usage()
 {
     cat << EOF
-Usage: $0 [OPTION]... [DIRECTORY(=~/xeus-cling-env)]
+Usage: $0 [OPTION]... [DIRECTORY(=~/xeus-cling(-env))]
 
 Build and install xeus-cling 0.15.3 from source in DIRECTORY, with a python
 virtual environment (optional) including jupyter, ipython, and ipykernel.
