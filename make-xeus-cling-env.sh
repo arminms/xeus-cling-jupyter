@@ -96,6 +96,7 @@ else
   INSTALL_DIR=$(realpath $1)
   if [ -z "${SKIP_VENV}" ] ; then
     mkdir -p $INSTALL_DIR
+  fi
 fi
 
 # set the build directory
