@@ -117,52 +117,6 @@ else
   export PATH=$INSTALL_DIR/bin:$PATH
 fi
 
-# llvm13 and cling v1.0~dev
-#
-if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $BUILD_DIR/cling-build/bin/cling ]); then
-  cd $BUILD_DIR
-  if [ ! -d "llvm-project" ]; then
-    git clone https://github.com/root-project/llvm-project.git
-  fi
-  cd llvm-project/
-  git checkout cling-llvm13
-  cd $BUILD_DIR
-  if [ ! -d "cling" ]; then
-    git clone https://github.com/root-project/cling.git
-  fi
-  cd cling/
-  git checkout acb2334131c19ef506767d6d9051b24755a8566b
-  # patch to allow redefinition by default
-  sed -i -e 's/AllowRedefinition(0)/AllowRedefinition(1)/g' include/cling/Interpreter/RuntimeOptions.h
-  mkdir -p $BUILD_DIR/cling-build && cd $BUILD_DIR/cling-build
-  cmake -DLLVM_EXTERNAL_PROJECTS=cling \
-        -DLLVM_BUILD_LLVM_DYLIB=OFF \
-        -DLLVM_ENABLE_RTTI=ON \
-        -DLLVM_ENABLE_EH=ON \
-        -DLLVM_BUILD_DOCS=OFF \
-        -DLLVM_ENABLE_SPHINX=OFF \
-        -DLLVM_ENABLE_DOXYGEN=OFF \
-        -DLLVM_ENABLE_WERROR=OFF \
-        -DLLVM_EXTERNAL_CLING_SOURCE_DIR=$BUILD_DIR/cling/ \
-        -DLLVM_ENABLE_PROJECTS="clang" \
-        -DLLVM_TARGETS_TO_BUILD="host;NVPTX" \
-        -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
-        -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
-        -DCMAKE_BUILD_TYPE=Release \
-        $BUILD_DIR/llvm-project/llvm
-  cmake --build . --target cling llvm-config -j $N
-  make -j install-clang-headers install-clang-resource-headers install-llvm-headers
-else
-  cd $BUILD_DIR/cling-build
-fi
-make -j install-clang-headers install-clang-resource-headers install-llvm-headers
-cp bin/* $INSTALL_DIR/bin
-cp lib/*.a $INSTALL_DIR/lib
-cp -r lib/cmake $INSTALL_DIR/lib
-CH=$BUILD_DIR/cling/include/cling
-mkdir -p $INSTALL_DIR/include/cling
-cp -r $CH/Interpreter $CH/MetaProcessor $CH/UserInterface $CH/Utils $INSTALL_DIR/include/cling
-
 # nlohmann/json v3.6.1
 #
 if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/include/nlohmann/json.hpp ]); then
@@ -266,6 +220,52 @@ if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/include/argpa
   cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
   cmake --build build -j && cmake --install build
 fi
+
+# llvm13 and cling v1.0~dev
+#
+if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $BUILD_DIR/cling-build/bin/cling ]); then
+  cd $BUILD_DIR
+  if [ ! -d "llvm-project" ]; then
+    git clone https://github.com/root-project/llvm-project.git
+  fi
+  cd llvm-project/
+  git checkout cling-llvm13
+  cd $BUILD_DIR
+  if [ ! -d "cling" ]; then
+    git clone https://github.com/root-project/cling.git
+  fi
+  cd cling/
+  git checkout acb2334131c19ef506767d6d9051b24755a8566b
+  # patch to allow redefinition by default
+  sed -i -e 's/AllowRedefinition(0)/AllowRedefinition(1)/g' include/cling/Interpreter/RuntimeOptions.h
+  mkdir -p $BUILD_DIR/cling-build && cd $BUILD_DIR/cling-build
+  cmake -DLLVM_EXTERNAL_PROJECTS=cling \
+        -DLLVM_BUILD_LLVM_DYLIB=OFF \
+        -DLLVM_ENABLE_RTTI=ON \
+        -DLLVM_ENABLE_EH=ON \
+        -DLLVM_BUILD_DOCS=OFF \
+        -DLLVM_ENABLE_SPHINX=OFF \
+        -DLLVM_ENABLE_DOXYGEN=OFF \
+        -DLLVM_ENABLE_WERROR=OFF \
+        -DLLVM_EXTERNAL_CLING_SOURCE_DIR=$BUILD_DIR/cling/ \
+        -DLLVM_ENABLE_PROJECTS="clang" \
+        -DLLVM_TARGETS_TO_BUILD="host;NVPTX" \
+        -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
+        -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
+        -DCMAKE_BUILD_TYPE=Release \
+        $BUILD_DIR/llvm-project/llvm
+  cmake --build . --target cling llvm-config -j $N
+  make -j install-clang-headers install-clang-resource-headers install-llvm-headers
+else
+  cd $BUILD_DIR/cling-build
+fi
+make -j install-clang-headers install-clang-resource-headers install-llvm-headers
+cp bin/* $INSTALL_DIR/bin
+cp lib/*.a $INSTALL_DIR/lib
+cp -r lib/cmake $INSTALL_DIR/lib
+CH=$BUILD_DIR/cling/include/cling
+mkdir -p $INSTALL_DIR/include/cling
+cp -r $CH/Interpreter $CH/MetaProcessor $CH/UserInterface $CH/Utils $INSTALL_DIR/include/cling
 
 # xeus-cling 0.15.3
 #
