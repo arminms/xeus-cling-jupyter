@@ -35,6 +35,7 @@ Needs CMake 3.12+ and 'realpath' to work (e.g. sudo apt-get install realpath).
 
   -b  FOLDER    build directory (default: ./build)
   -c            clean the build directory after installation
+  -g            install xeus-cling CUDA-enabled kernels for NVIDIA GPUs
   -n  N         number of threads to build cling (default: 2)
   -h            show this help message
   -r            resume the build from the last step
@@ -57,6 +58,9 @@ while getopts ":b:cn:rsx" o; do
             ;;
         c)
             CLEAN=1
+            ;;
+        g)
+            CUDA_KERNELS=1
             ;;
         n)
             N=${OPTARG}
@@ -105,6 +109,9 @@ if [ -z "${BUILD_DIR}" ] ; then
   mkdir -p build && cp -r kernels patches build && cd build && BUILD_DIR=$PWD
 else
   cp -r kernels patches $BUILD_DIR && cd $BUILD_DIR
+  if [ -z "${CUDA_KERNELS}" ] ; then
+    rm -rf kernels/*-cuda
+  fi
 fi
 
 # create the python virtual environment and install dependencies if needed
