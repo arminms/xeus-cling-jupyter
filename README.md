@@ -11,7 +11,7 @@ Usage: ./make-xeus-cling-jupyter.sh [OPTION]... [DIRECTORY(=~/xeus-cling(-env))]
 
 Build and install xeus-cling 0.15.3 from source in DIRECTORY, optionally with a
 python virtual environment or as a Docker image.
-Needs CMake 3.12+ and 'realpath' to work (e.g. sudo apt-get install realpath).
+Needs CMake 3.12+ and 'realpath' to work (e.g. 'sudo apt install realpath').
 
   -b  FOLDER    build directory (default: ./build)
   -c            clean the build directory after installation
@@ -22,4 +22,12 @@ Needs CMake 3.12+ and 'realpath' to work (e.g. sudo apt-get install realpath).
   -r            resume the build from the last step
   -s            skip creating python virtual environment
   -x            install extra libraries (xproperty, xwidgets, xtensor)
+  ```
+## Running using Docker
+Use the following command to launch the [Docker](https://docker.io) container:
 ```
+docker run -p 8888:8888 -it --rm asobhani/xeus-cling-jupyter
+```
+Or this one with CUDA support:
+```
+docker run --gpus=all -p 8888:8888 -it --rm asobhani/xeus-cling-jupyter:latest-cuda
