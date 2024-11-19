@@ -55,6 +55,8 @@ RUN set -ex \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         nvtop \
         nvidia-cuda-toolkit \
+    && rm -rf /usr/lib/x86_64-linux-gnu/libnvidia-ml.* \
+    && rm -rf /usr/lib/x86_64-linux-gnu/libcuda.* \
     && rm -rf /var/lib/apt/lists/*
 
 #-- base-11 image (CUDA 11) -----------------------------------------------------
@@ -135,14 +137,16 @@ RUN set -ex \
 RUN cd /opt \
     && git clone https://github.com/arminms/xeus-cling-env.git \
     && cd /opt/xeus-cling-env \
-    && ./make-xeus-cling-env.sh -rsxn 2 /opt/xeus-cling
+    && ./make-xeus-cling-jupyter.sh -rsxn 2 /opt/xeus-cling
 
 #-- xeus-cling-jupyter image ---------------------------------------------------
 
 FROM base-${CUDA} AS xeus-cling-jupyter
 
+# reintroduce the CUDA build argument
 ARG CUDA
 
+# set the maintainer and description
 LABEL maintainer="Armin Sobhani <arminms@gmail.com>"
 LABEL description="A Jupyter image with xeus-cling and optionally CUDA support"
 
