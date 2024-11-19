@@ -189,7 +189,7 @@ ENV JUPYTER_PORT=8888
 EXPOSE $JUPYTER_PORT
 
 # set the working directory
-WORKDIR "${HOME}"
+WORKDIR /home/jovyan
 
 # activate the venv and start jupyter-lab
 CMD source /opt/xeus-cling/bin/activate ; SHELL=/bin/bash jupyter-lab
