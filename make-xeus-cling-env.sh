@@ -35,6 +35,7 @@ Needs CMake 3.12+ and 'realpath' to work (e.g. sudo apt-get install realpath).
 
   -b  FOLDER    build directory (default: ./build)
   -c            clean the build directory after installation
+  -d            build xeus-cling-jupyter Docker image (requires Docker)
   -g            install xeus-cling CUDA-enabled kernels for NVIDIA GPUs
   -n  N         number of threads to build cling (default: 2)
   -h            show this help message
@@ -58,6 +59,9 @@ while getopts ":b:cn:rsx" o; do
             ;;
         c)
             CLEAN=1
+            ;;
+        d)
+            DOCKER=1
             ;;
         g)
             CUDA_KERNELS=1
@@ -87,6 +91,32 @@ shift $((OPTIND-1))
 # exit on error and verbose
 #
 set -ex
+
+# build the Docker image if requested and exit
+if [ "x{$DOCKER}" = 1 ]; then
+  if [ -z "${CUDA_KERNELS}" ]; then
+    docker build -t xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04 . \
+    && cat << EOF
+
+Docker image 'xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04' has been successfully built.
+run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter' to start jupyter
+
+EOF
+  else
+    docker build --build-arg CUDA=10 -t -t xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04 . \
+    && cat << EOF
+
+Docker image 'xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04' has been successfully built.
+To run CUDA kernels, 'NVIDIA Container Toolkit' must have been installed on the host:
+
+https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+
+run 'docker run gpus=all -p 8888:8888 -it --rm xeus-cling-jupyter' to start jupyter
+
+EOF
+  fi
+  exit 0
+fi
 
 # set the installation directory
 #
