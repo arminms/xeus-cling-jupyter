@@ -29,8 +29,8 @@ usage()
     cat << EOF
 Usage: $0 [OPTION]... [DIRECTORY(=~/xeus-cling(-env))]
 
-Build and install xeus-cling 0.15.3 from source in DIRECTORY, with a python
-virtual environment (optional) including jupyter, ipython, and ipykernel.
+Build and install xeus-cling 0.15.3 from source in DIRECTORY, optionally with a
+python virtual environment or as a Docker image.
 Needs CMake 3.12+ and 'realpath' to work (e.g. sudo apt-get install realpath).
 
   -b  FOLDER    build directory (default: ./build)
@@ -99,7 +99,7 @@ if [ "x{$DOCKER}" = 1 ]; then
     && cat << EOF
 
 Docker image 'xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04' has been successfully built.
-run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter' to start jupyter
+run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04' to start jupyter
 
 EOF
   else
@@ -111,7 +111,7 @@ To run CUDA kernels, 'NVIDIA Container Toolkit' must have been installed on the 
 
 https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 
-run 'docker run gpus=all -p 8888:8888 -it --rm xeus-cling-jupyter' to start jupyter
+run 'docker run --gpus=all -p 8888:8888 -it --rm xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04' to start jupyter
 
 EOF
   fi
