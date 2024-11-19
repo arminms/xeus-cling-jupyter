@@ -135,8 +135,8 @@ RUN set -ex \
 
 # install xeus-cling
 RUN cd /opt \
-    && git clone https://github.com/arminms/xeus-cling-env.git \
-    && cd /opt/xeus-cling-env \
+    && git clone https://github.com/arminms/xeus-cling-jupyter.git \
+    && cd /opt/xeus-cling-jupyter \
     && ./make-xeus-cling-jupyter.sh -rsxn 2 /opt/xeus-cling
 
 #-- xeus-cling-jupyter image ---------------------------------------------------

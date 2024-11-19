@@ -4,8 +4,8 @@ A bash script to build and install [xeus-cling](https://github.com/jupyter-xeus/
 ## Usage
 
 ```bash
-$ git clone git@github.com:arminms/xeus-cling-env.git
-$ cd xeus-cling-env
+$ git clone git@github.com:arminms/xeus-cling-jupyter.git
+$ cd xeus-cling-jupyter
 $ ./make-xeus-cling-jupyter.sh --help
 Usage: ./make-xeus-cling-jupyter.sh [OPTION]... [DIRECTORY(=~/xeus-cling(-env))]
 
