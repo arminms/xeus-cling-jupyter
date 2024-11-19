@@ -1,3 +1,24 @@
+#
+# Copyright (c) 2024 Armin Sobhani (arminms@gmail.com)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
 ARG CUDA=0
 
 #-- base image -----------------------------------------------------------------
@@ -28,7 +49,7 @@ FROM base AS base-10
 # change default shell to bash
 SHELL ["/bin/bash", "-c"]
 
-# install nvidia-cuda-toolkit 10
+# install nvidia-cuda-toolkit 10.1
 RUN set -ex \
     && apt-get update && apt-get upgrade -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -120,10 +141,8 @@ RUN cd /opt \
 
 FROM base-${CUDA} AS xeus-cling-jupyter
 
-# reintroduce the CUDA argument
 ARG CUDA
 
-# set the maintainer and description
 LABEL maintainer="Armin Sobhani <arminms@gmail.com>"
 LABEL description="A Jupyter image with xeus-cling and optionally CUDA support"
 
@@ -141,11 +160,13 @@ RUN set -ex \
         libstdc++-9-dev \
         libtbb-dev \
         wget \
+    && mkdir -p /etc/jupyter \
     && rm -rf /var/lib/apt/lists/*
 
 # copy the venv and xeus-cling
 COPY --from=jupyter /opt/xeus-cling /opt/xeus-cling
 COPY --from=xeus-cling /opt/xeus-cling /opt/xeus-cling
+COPY docker/jupyter_server_config.py docker/docker_healthcheck.py /etc/jupyter/
 
 # remove the CUDA kernels if CUDA is not installed
 RUN if [ "$CUDA" = "0" ] ; then rm -rf /opt/xeus-cling/share/jupyter/kernels/*-cuda ; fi
@@ -156,14 +177,19 @@ RUN set -ex && \
     --uid 1000 \
     jovyan
 
+# HEALTHCHECK documentation: https://docs.docker.com/engine/reference/builder/#healthcheck
+HEALTHCHECK --interval=3s --timeout=1s --start-period=3s --retries=3 \
+    CMD /etc/jupyter/docker_healthcheck.py || exit 1
+
 # Run as the non-root user we just created
 USER 1000
 
 # expose the jupyter-lab port
-EXPOSE 8888
+ENV JUPYTER_PORT=8888
+EXPOSE $JUPYTER_PORT
 
 # set the working directory
-WORKDIR /home/jovyan
+WORKDIR "${HOME}"
 
 # activate the venv and start jupyter-lab
-CMD source /opt/xeus-cling/bin/activate ; SHELL=/bin/bash jupyter-lab "--no-browser"
+CMD source /opt/xeus-cling/bin/activate ; SHELL=/bin/bash jupyter-lab
