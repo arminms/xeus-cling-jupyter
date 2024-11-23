@@ -52,7 +52,7 @@ N=2
 
 # parse the command line arguments
 #
-while getopts ":b:cn:rsx" o; do
+while getopts ":b:cgn:rsx" o; do
     case "${o}" in
         b)
             BUILD_DIR=$(realpath ${OPTARG})
