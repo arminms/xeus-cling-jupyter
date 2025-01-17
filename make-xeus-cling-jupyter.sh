@@ -357,7 +357,7 @@ if [ ! -z "${EXTRA_LIBS}" ] ; then
     cd xwidgets/
     git checkout 0.28.1
     cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
-    cmake --build build -j && cmake --install build
+    cmake --build build -j $N && cmake --install build
   fi
   # xtensor 0.25.0
   #
