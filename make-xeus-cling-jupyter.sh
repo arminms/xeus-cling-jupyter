@@ -37,6 +37,7 @@ Needs CMake 3.12+ and 'realpath' to work (e.g. 'sudo apt-get install realpath').
   -c            clean the build directory after installation
   -d            build xeus-cling-jupyter Docker image (requires Docker)
   -g            install xeus-cling CUDA-enabled kernels for NVIDIA GPUs
+  -k            install kernels to the current user's kernel registry
   -n  N         number of threads to build cling (default: 2)
   -h            show this help message
   -r            resume the build from the last step
@@ -52,7 +53,7 @@ N=2
 
 # parse the command line arguments
 #
-while getopts ":b:cgn:rsx" o; do
+while getopts ":b:cgkn:rsx" o; do
     case "${o}" in
         b)
             BUILD_DIR=$(realpath ${OPTARG})
@@ -65,6 +66,8 @@ while getopts ":b:cgn:rsx" o; do
             ;;
         g)
             CUDA_KERNELS=1
+            ;;
+        k)  USER_KERNELS=1
             ;;
         n)
             N=${OPTARG}
@@ -368,6 +371,16 @@ if [ ! -z "${EXTRA_LIBS}" ] ; then
     cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
     cmake --build build -j && cmake --install build
   fi 
+fi
+
+# install kernels to the current user's kernel registry if needed
+#
+if [ ! -z "${USER_KERNELS}" ] ; then
+  cd ${INSTALL_DIR}/share/jupyter/kernels
+  for k in */ ; do
+    jupyter kernelspec install --user $k
+  done
+  cd ${BUILD_DIR}
 fi
 
 # deactivate the virtual environment if needed
