@@ -152,7 +152,8 @@ fi
 if [ -z "${SKIP_VENV}" ] ; then
   virtualenv $INSTALL_DIR
   source $INSTALL_DIR/bin/activate
-  pip install --upgrade pip && pip install jupyter ipython ipykernel
+  pip install --upgrade pip && pip install jupyter ipython ipykernel jupyterlab_myst jupyterlab_widgets widgetsnbextension mystmd jupytext
+  jupytext-config set-default-viewer
 else
   mkdir -p $INSTALL_DIR/bin $INSTALL_DIR/share/jupyter/kernels/
   export PATH=$INSTALL_DIR/bin:$PATH
