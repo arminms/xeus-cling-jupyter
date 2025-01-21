@@ -8,6 +8,7 @@ project:
   # keywords: []
   # authors: []
   github: https://github.com/arminms/xeus-cling-env
+  jupyter: true
   license:
     code: MIT
     content: CC-BY-4.0
