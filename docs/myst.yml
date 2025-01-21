@@ -1,0 +1,32 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  id: 84d5d8ff-d559-412c-abb4-2a1a94959196
+  title: Jupyter + Xeus-Cling
+  subject: Xeus-Cling Guide
+  description: How to use xeus-cling in a Jupyter environment
+  # keywords: []
+  # authors: []
+  github: https://github.com/arminms/xeus-cling-env
+  license:
+    code: MIT
+    content: CC-BY-4.0
+  references:
+    xeus-cling: https://xeus-cling.readthedocs.io/en/latest
+
+  # To autogenerate a Table of Contents, run "myst init --write-toc"
+  toc:
+    - file: index.md
+    - file: quickstart.md
+    - title: Tutorials
+      children:
+        - file: 01_openmp.md
+        - file: 02_cpp_17_parallel_algorithms.md
+        - file: 03_cuda.md
+
+site:
+  template: book-theme
+  options:
+  #   favicon: favicon.ico
+    logo: images/logo.png
+    logo_dark: images/logo_dark.png
