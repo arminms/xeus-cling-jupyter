@@ -107,8 +107,8 @@ RUN set -ex \
 RUN set -ex \
     && virtualenv /opt/xeus-cling \
     && source /opt/xeus-cling/bin/activate \
-    && pip install --upgrade pip \
-    && pip install jupyter ipython ipykernel \
+    && pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir jupyter ipython ipykernel \
     && deactivate
 
 #-- xeus-cling image -----------------------------------------------------------
