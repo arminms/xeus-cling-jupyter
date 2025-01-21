@@ -33,3 +33,4 @@ docker run -p 8888:8888 -it --rm asobhani/xeus-cling-jupyter
 Or this one with CUDA support:
 ```
 docker run --gpus=all -p 8888:8888 -it --rm asobhani/xeus-cling-jupyter:latest-cuda
+```
