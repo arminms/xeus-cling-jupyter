@@ -107,8 +107,17 @@ RUN set -ex \
 RUN set -ex \
     && virtualenv /opt/xeus-cling \
     && source /opt/xeus-cling/bin/activate \
-    && pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir jupyter ipython ipykernel \
+    && pip install --upgrade pip \
+    && pip install \
+        jupyter \
+        jupyterhub \
+        ipython \
+        ipykernel \
+        jupyterlab_myst \
+        jupyterlab_widgets \
+        widgetsnbextension \
+        mystmd \
+        jupytext \
     && deactivate
 
 #-- xeus-cling image -----------------------------------------------------------
@@ -143,15 +152,23 @@ RUN cd /opt \
 
 FROM base-${CUDA} AS xeus-cling-jupyter
 
-# reintroduce the CUDA build argument
 ARG CUDA
 
-# set the maintainer and description
 LABEL maintainer="Armin Sobhani <arminms@gmail.com>"
 LABEL description="A Jupyter image with xeus-cling and optionally CUDA support"
 
 # change default shell to bash
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# define the non-root user
+ARG NB_USER=jovyan
+ARG NB_UID=1000
+ENV USER ${NB_USER}
+ENV NB_UID ${NB_UID}
+ENV HOME /home/${NB_USER}
+
+# define the node version
+ARG node_version=v18.13.0
 
 # install python, adduser and other dependencies
 RUN set -ex \
@@ -164,6 +181,9 @@ RUN set -ex \
         libstdc++-9-dev \
         libtbb-dev \
         wget \
+        nodejs \
+        xz-utils \
+    && wget -qO- https://nodejs.org/dist/${node_version}/node-${node_version}-linux-x64.tar.xz | tar --strip-components=1 -xJ -C /usr/local \
     && mkdir -p /etc/jupyter \
     && rm -rf /var/lib/apt/lists/*
 
@@ -178,22 +198,25 @@ RUN if [ "$CUDA" = "0" ] ; then rm -rf /opt/xeus-cling/share/jupyter/kernels/*-c
 # create a non-root user
 RUN set -ex && \
     adduser --disabled-password --gecos "Default Jupyter user" \
-    --uid 1000 \
-    jovyan
+    --uid ${NB_UID} \
+    ${NB_USER}
 
 # HEALTHCHECK documentation: https://docs.docker.com/engine/reference/builder/#healthcheck
 HEALTHCHECK --interval=3s --timeout=1s --start-period=3s --retries=3 \
     CMD /etc/jupyter/docker_healthcheck.py || exit 1
 
 # Run as the non-root user we just created
-USER 1000
+USER ${NB_UID}
 
 # expose the jupyter-lab port
 ENV JUPYTER_PORT=8888
 EXPOSE $JUPYTER_PORT
 
 # set the working directory
-WORKDIR /home/jovyan
+WORKDIR ${HOME}
+
+# set the PATH
+ENV PATH="/opt/xeus-cling/bin:$PATH"
 
 # activate the venv and start jupyter-lab
-CMD source /opt/xeus-cling/bin/activate ; SHELL=/bin/bash jupyter-lab
+CMD SHELL=/bin/bash jupyter-lab
