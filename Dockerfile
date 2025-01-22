@@ -26,7 +26,7 @@ ARG CUDA=0
 FROM ubuntu:20.04 AS base
 
 # change default shell to bash
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # install python3
 RUN set -ex \
@@ -40,14 +40,14 @@ RUN set -ex \
 FROM base AS base-0
 
 # change default shell to bash
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 #-- base-10 image (CUDA 10) -----------------------------------------------------
 
 FROM base AS base-10
 
 # change default shell to bash
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # install nvidia-cuda-toolkit 10.1
 RUN set -ex \
@@ -64,7 +64,7 @@ RUN set -ex \
 FROM nvidia/cuda:11.8.0-devel-ubuntu20.04 AS base-11
 
 # change default shell to bash
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # install python3
 RUN set -ex \
@@ -79,7 +79,7 @@ RUN set -ex \
 FROM nvidia/cuda:12.6.0-devel-ubuntu20.04 AS base-12
 
 # change default shell to bash
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # install python3
 RUN set -ex \
@@ -94,7 +94,7 @@ RUN set -ex \
 FROM base AS jupyter
 
 # change default shell to bash
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # install virtualenv
 RUN set -ex \
@@ -116,7 +116,7 @@ RUN set -ex \
 FROM base AS xeus-cling
 
 # change default shell to bash
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # install build-essential and other dependencies
 RUN set -ex \
@@ -151,7 +151,7 @@ LABEL maintainer="Armin Sobhani <arminms@gmail.com>"
 LABEL description="A Jupyter image with xeus-cling and optionally CUDA support"
 
 # change default shell to bash
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # install python, adduser and other dependencies
 RUN set -ex \
