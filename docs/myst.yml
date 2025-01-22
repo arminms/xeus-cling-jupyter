@@ -8,7 +8,9 @@ project:
   # keywords: []
   # authors: []
   github: https://github.com/arminms/xeus-cling-env
-  jupyter: true
+  jupyter:
+    binder: true
+    kernelName: xcpp17-openmp
   license:
     code: MIT
     content: CC-BY-4.0
