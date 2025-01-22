@@ -91,6 +91,9 @@ cuda_vector_add<<<1,1>>>(d_out, d_a, d_b, N);
 cudaFree(d_a);
 cudaFree(d_b);
 cudaFree(d_out);
+```
++++
+```{code-cell} cpp
 free(a);
 free(b);
 free(out);
