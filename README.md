@@ -1,3 +1,5 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/arminms/xeus-cling-jupyter/HEAD)
+
 # xeus-cling-jupyter
 A bash script to build and install [xeus-cling](https://github.com/jupyter-xeus/xeus-cling) from source in a python virtual environment or as a Docker image.
 
