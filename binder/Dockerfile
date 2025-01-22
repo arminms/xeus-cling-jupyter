@@ -1,1 +1,1 @@
-FROM asobhani/xeus-cling-jupyter:7a637c4630f0
+FROM asobhani/xeus-cling-jupyter:o4zx8cE6uzcN
