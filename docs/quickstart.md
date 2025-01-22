@@ -23,7 +23,7 @@ description: Running xeus-cling in a virtual environment or a Docker container.
 (build_virtual_env)=
 ## Build the entire software stack
 
-To build and install the entire software stack for running [Jupyter](wiki:Project_Jupyter) with [xeus-cling](xref:xeus-cling) kernel from the source, you can use [](https://github.com/arminms/xeus-cling-jupyter/blob/main/make-xeus-cling-jupyter.sh#L24-L46) bash script:
+To build and install the entire software stack for running [Jupyter](wiki:Project_Jupyter) with [Xeus-Cling](xref:xeus-cling) kernel from the source, you can use [](https://github.com/arminms/xeus-cling-jupyter/blob/main/make-xeus-cling-jupyter.sh#L24-L46) bash script:
 
 ``` shell
 $ git clone git@github.com:arminms/xeus-cling-jupyter.git
