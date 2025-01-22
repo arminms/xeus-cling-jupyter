@@ -1,20 +1,21 @@
 ---
 subject: Xeus-Cling Quickstart Tutorial
 kernelspec:
-  name: xcpp14-cuda
-  display_name: C++14
-  language: C++14-CUDA
+  name: xcpp17
+  display_name: C++17
+  language: C++17
 ---
 
 # Working with CUDA
 
 ```{code-cell} cpp
+:tags: [skip-execution]
 #include <cuda.h>
 #include <cuda_runtime.h>
 ```
 +++
 ```{code-cell} cpp
-:tags: [hide-output]
+:tags: [skip-execution]
 cudaDeviceProp prop;
 cudaGetDeviceProperties(&prop, 0);
 prop.name
@@ -28,6 +29,7 @@ void vector_add(float *out, float *a, float *b, int n)
 ```
 +++
 ```{code-cell} cpp
+
 const size_t N{10'000'007};
 
 float *a, *b, *out; 
@@ -50,6 +52,8 @@ vector_add(out, a, b, N);
 ```
 +++
 ```{code-cell} cpp
+:tags: [skip-execution]
+
 __global__ void cuda_vector_add(float *out, float *a, float *b, int n)
 {    for(int i = 0; i < n; i++)
         out[i] = a[i] + b[i];
@@ -57,6 +61,8 @@ __global__ void cuda_vector_add(float *out, float *a, float *b, int n)
 ```
 +++
 ```{code-cell} cpp
+:tags: [skip-execution]
+
 float *d_a, *d_b, *d_out;
 
 a = (float*)malloc(sizeof(float) * N);
@@ -72,12 +78,15 @@ cudaMemcpy(d_b, b, sizeof(float) * N, cudaMemcpyHostToDevice);
 ```
 +++
 ```{code-cell} cpp
-:tags: [hide-output]
+:tags: [skip-execution]
+
 %%timeit -n 3 -r 3
 cuda_vector_add<<<1,1>>>(d_out, d_a, d_b, N);
 ```
 +++
 ```{code-cell} cpp
+:tags: [skip-execution]
+
 // Cleanup after kernel execution
 cudaFree(d_a);
 cudaFree(d_b);

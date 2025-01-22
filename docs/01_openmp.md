@@ -1,9 +1,9 @@
 ---
 subject: Xeus-Cling Quickstart Tutorial
 kernelspec:
-  name: xcpp14-openmp
-  display_name: C++14
-  language: C++14-OpenMP
+  name: xcpp17-openmp
+  display_name: C++17
+  language: C++17-OpenMP
 ---
 
 # Working with OpenMP
