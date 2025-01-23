@@ -155,17 +155,21 @@ FROM base-${CUDA} AS xeus-cling-jupyter
 ARG CUDA
 
 LABEL maintainer="Armin Sobhani <arminms@gmail.com>"
-LABEL description="A Jupyter image with xeus-cling and optionally CUDA support"
+LABEL description="A Jupyter image with Xeus-Cling kernel and optionally CUDA support"
+
+ARG NB_USER="jovyan"
+ARG NB_UID="1000"
+ARG NB_GID="100"
 
 # change default shell to bash
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# define the non-root user
-ARG NB_USER=jovyan
-ARG NB_UID=1000
-ENV USER ${NB_USER}
-ENV NB_UID ${NB_UID}
-ENV HOME /home/${NB_USER}
+# configure environment
+ENV NB_USER=${NB_USER} \
+    NB_UID=${NB_UID} \
+    NB_GID=${NB_GID} \
+    SHELL=/bin/bash \
+    HOME=/home/${NB_USER}
 
 # define the node version
 ARG node_version=v18.13.0
@@ -182,6 +186,7 @@ RUN set -ex \
         libtbb-dev \
         wget \
         nodejs \
+        xclip \
         xz-utils \
     && wget -qO- https://nodejs.org/dist/${node_version}/node-${node_version}-linux-x64.tar.xz | tar --strip-components=1 -xJ -C /usr/local \
     && mkdir -p /etc/jupyter \
@@ -205,7 +210,7 @@ RUN set -ex && \
 HEALTHCHECK --interval=3s --timeout=1s --start-period=3s --retries=3 \
     CMD /etc/jupyter/docker_healthcheck.py || exit 1
 
-# Run as the non-root user we just created
+# run as the non-root user we just created
 USER ${NB_UID}
 
 # expose the jupyter-lab port
