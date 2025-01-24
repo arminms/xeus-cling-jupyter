@@ -118,6 +118,7 @@ RUN set -ex \
         widgetsnbextension \
         mystmd \
         jupytext \
+    && jupytext-config set-default-viewer \
     && deactivate
 
 #-- xeus-cling image -----------------------------------------------------------
