@@ -35,7 +35,7 @@ project:
 site:
   template: book-theme
   options:
-    favicon: ./images/logo.svg
+    favicon: ./images/logo.png
     logo: ./images/logo.svg
     logo_dark: ./images/logo.svg
     logo_text: Jupyter + Xeus-Cling
