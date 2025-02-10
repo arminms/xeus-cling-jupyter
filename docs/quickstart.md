@@ -90,13 +90,28 @@ Or `-gd` for CUDA support:
 (launch_docker_image)=
 ## Launching pre-built container images
 
-Use the following command to launch the the pre-build container image:
+### [Docker](wiki:Docker_(software))
+
+Use the following command to launch the pre-built container image:
 ```bash
 docker run -p 8888:8888 -it --rm asobhani/xeus-cling-jupyter
 ```
-Or this one with CUDA support:
+Or this one with <wiki:CUDA> support:
 ```bash
 docker run --gpus=all -p 8888:8888 -it --rm asobhani/xeus-cling-jupyter:latest-cuda
 ```
 
 You can also use the above container images as the starting point for your custom-made docker image (e.g. `FROM asobhani/xeus-cling-jupyter:latest`).
+
+### [Apptainer](wiki:Singularity_(software))
+
+If you're working on an [HPC](wiki:High-performance_computing) cluster, you can use [Apptainer](wiki:Singularity_(software)) instead:
+
+```bash
+apptainer run docker://asobhani/xeus-cling-jupyter:latest
+```
+Or this one with <wiki:CUDA> support:
+
+```bash
+apptainer --nv run docker://asobhani/xeus-cling-jupyter:latest-cuda
+```
