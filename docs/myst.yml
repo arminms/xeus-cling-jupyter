@@ -2,11 +2,15 @@
 version: 1
 project:
   id: 84d5d8ff-d559-412c-abb4-2a1a94959196
-  title: Jupyter + Xeus-Cling
+  title: Xeus-Cling Guide
   subject: Xeus-Cling Guide
-  description: How to use xeus-cling in a Jupyter environment
-  # keywords: []
-  # authors: []
+  description: Working with Jupyter Notebooks running with Xeus-Cling kernel
+  keywords:
+    - Xeus-Cling
+    - Jupyter
+    - C++
+    - OpenMP
+    - CUDA
   github: https://github.com/arminms/xeus-cling-env
   jupyter:
     binder: true
@@ -23,15 +27,17 @@ project:
     - file: quickstart.md
     - title: Tutorials
       children:
-        - file: 01_openmp.md
+        - file: 01_the_basics.md
         - file: 02_cpp_17_parallel_algorithms.md
-        - file: 03_cuda.md
+        - file: 03_openmp.md
+        - file: 04_cuda.md
 
 site:
   template: book-theme
   options:
-  #   favicon: favicon.ico
-    logo: images/logo.png
-    logo_dark: images/logo_dark.png
+    favicon: ./images/logo.svg
+    logo: ./images/logo.svg
+    logo_dark: ./images/logo.svg
+    logo_text: Jupyter + Xeus-Cling
     analytics_google: G-3GVV5PE8PC
 
