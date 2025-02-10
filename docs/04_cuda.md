@@ -8,6 +8,12 @@ kernelspec:
 
 # Working with CUDA
 
+Here's the same vector addition example the we used for <wiki:OpenMP> with <wiki:CUDA>.
+
+:::{tip} Choosing the right kernel 
+Make sure the selected kernel for the notebook is `C++17-CUDA`.
+:::
+
 ```{code-cell} cpp
 :tags: [skip-execution]
 #include <cuda.h>
@@ -88,7 +94,7 @@ cudaMemcpy(d_b, b, sizeof(double) * N, cudaMemcpyHostToDevice);
 :tags: [skip-execution]
 
 const size_t threads_per_block{256};
-size_t blocks_in_grid = ceil( float(N) / threads_per_block );
+size_t blocks_in_grid{N / threads_per_block + 1};
 ```
 +++
 ```{code-cell} cpp

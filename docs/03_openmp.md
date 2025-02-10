@@ -8,6 +8,13 @@ kernelspec:
 
 # Working with OpenMP
 
+Here's a simple [vector addition](wiki:Euclidean_vector#Addition_and_subtraction) example parallelized with <wiki:OpenMP>.
+
+:::{tip} Choosing the right kernel 
+Make sure the selected kernel for the notebook is `C++17-OpenMP`.
+:::
+
+
 ```{code-cell} cpp
 #include <vector>
 
@@ -28,7 +35,7 @@ template <typename OutputIt, typename InputIt, typename Size>
 void vector_add_omp(OutputIt out, InputIt a, InputIt b, Size n)
 {
     #pragma omp parallel for
-    for(Size i = 0; i < n; ++i)
+    for (Size i = 0; i < n; ++i)
         out[i] = a[i] + b[i];
 }
 ```
