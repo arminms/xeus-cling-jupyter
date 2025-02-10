@@ -2,8 +2,8 @@
 version: 1
 project:
   id: 84d5d8ff-d559-412c-abb4-2a1a94959196
-  title: Xeus-Cling Guide
-  subject: Xeus-Cling Guide
+  title: Installation Guide
+  subject: Installation Guide
   description: Working with Jupyter Notebooks running with Xeus-Cling kernel
   keywords:
     - Xeus-Cling
