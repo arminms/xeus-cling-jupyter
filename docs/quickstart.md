@@ -15,7 +15,7 @@ description: Running xeus-cling in a virtual environment or a Docker container.
 
 - <wiki:Linux> OS (tested on <wiki:Ubuntu> 20.04).
 - <wiki:Linux> build essentials (e.g. `sudo apt-get installbuild-essential` on <wiki:Ubuntu>).
-- 'realpath' (e.g. `sudo apt-get install realpath` on <wiki:Ubuntu>).
+- `realpath` (e.g. `sudo apt-get install realpath` on <wiki:Ubuntu>).
 - <wiki:CMake> 3.12 or higher.
 - <wiki:CUDA> CUDA >= 8.0 and <= 10.2 if you need CUDA kernels (`-g` option).
 - [Docker](wiki:Docker_(software)) if you want to build/run the `Docker` images/containers.
