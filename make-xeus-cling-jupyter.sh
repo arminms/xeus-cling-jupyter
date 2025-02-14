@@ -106,7 +106,7 @@ run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter:0.15.3-cling1.0dev-llvm
 
 EOF
   else
-    docker build --build-arg CUDA=10 -t -t xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04 . \
+    docker build --build-arg CUDA=10 -t xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04 . \
     && cat << EOF
 
 Docker image 'xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04' has been successfully built.
