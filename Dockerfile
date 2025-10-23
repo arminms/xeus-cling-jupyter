@@ -145,8 +145,13 @@ RUN set -ex \
 
 # install xeus-cling
 RUN cd /opt \
-    && git clone https://github.com/arminms/xeus-cling-jupyter.git \
-    && cd /opt/xeus-cling-jupyter \
+    && mkdir -p xeus-cling-jupyter/kernels xeus-cling-jupyter/patches/
+
+COPY kernels /opt/xeus-cling-jupyter/kernels/
+COPY patches /opt/xeus-cling-jupyter/patches/
+COPY make-xeus-cling-jupyter.sh /opt/xeus-cling-jupyter/
+
+RUN cd /opt/xeus-cling-jupyter \
     && ./make-xeus-cling-jupyter.sh -rsxn 2 /opt/xeus-cling
 
 #-- xeus-cling-jupyter image ---------------------------------------------------
