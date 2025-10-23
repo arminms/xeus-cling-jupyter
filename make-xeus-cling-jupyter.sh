@@ -271,13 +271,15 @@ if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $BUILD_DIR/cling-build/bin
     git clone https://github.com/root-project/llvm-project.git
   fi
   cd llvm-project/
-  git checkout cling-llvm13
+  # git checkout cling-llvm13
+  git checkout cling-llvm16
   cd $BUILD_DIR
   if [ ! -d "cling" ]; then
     git clone https://github.com/root-project/cling.git
   fi
   cd cling/
-  git checkout acb2334131c19ef506767d6d9051b24755a8566b
+  # git checkout acb2334131c19ef506767d6d9051b24755a8566b
+  git checkout v1.1
   # patch to allow redefinition by default
   sed -i -e 's/AllowRedefinition(0)/AllowRedefinition(1)/g' include/cling/Interpreter/RuntimeOptions.h
   mkdir -p $BUILD_DIR/cling-build && cd $BUILD_DIR/cling-build
@@ -318,6 +320,10 @@ if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/bin/xcpp ]); 
     cd xeus-cling/
     git checkout 0.15.3
     # fix compilation errors with llvm13
+    sed -i -e 's/"--src-root")/)/g' CMakeLists.txt
+    sed -i -e 's/ect", H/ect", \&CI->getVirtualFileSystem(), H/g' src/xmagics/executable.cpp
+    sed -i -e 's/*Context/*m_interpreter.getLLVMContext()/g' src/xmagics/executable.cpp
+    sed -i -e 's/llvm::NoneType::None/std::nullopt/g' src/xmagics/executable.cpp
     sed -i -e 's/.getDataLayout();/.getDataLayoutString()/g' src/xmagics/executable.cpp
     sed -i -e 's/getDataLayoutString()/getDataLayoutString();/g' src/xmagics/executable.cpp
     sed -i -e 's/simplisticCastAs/castAs/g' src/xmagics/execution.cpp
@@ -329,7 +335,7 @@ if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/bin/xcpp ]); 
   else
     cd xeus-cling/
   fi
-  cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCling_DIR=$INSTALL_DIR/tools/cling/lib/cmake/cling
+  cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCling_DIR=$BUILD_DIR/cling-build/tools/cling/lib/cmake/cling
   cmake --build build -j && cmake --install build
 fi
 
