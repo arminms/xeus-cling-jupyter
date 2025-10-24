@@ -23,7 +23,7 @@ ARG CUDA=0
 
 #-- base image -----------------------------------------------------------------
 
-FROM ubuntu:20.04 AS base
+FROM ubuntu:22.04 AS base
 
 # change default shell to bash
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -42,14 +42,14 @@ FROM base AS base-0
 # change default shell to bash
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-#-- base-10 image (CUDA 10) -----------------------------------------------------
+#-- base-11 image (CUDA 11) -----------------------------------------------------
 
-FROM base AS base-10
+FROM base AS base-11
 
 # change default shell to bash
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# install nvidia-cuda-toolkit 10.1
+# install nvidia-cuda-toolkit 11.5
 RUN set -ex \
     && apt-get update && apt-get upgrade -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -59,24 +59,9 @@ RUN set -ex \
     && rm -rf /usr/lib/x86_64-linux-gnu/libcuda.* \
     && rm -rf /var/lib/apt/lists/*
 
-#-- base-11 image (CUDA 11) -----------------------------------------------------
-
-FROM nvidia/cuda:11.8.0-devel-ubuntu20.04 AS base-11
-
-# change default shell to bash
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# install python3
-RUN set -ex \
-    && apt-get update && apt-get upgrade -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        nvtop \
-        python3 \
-    && rm -rf /var/lib/apt/lists/*
-
 #-- base-12 image (CUDA 12) -----------------------------------------------------
 
-FROM nvidia/cuda:12.6.0-devel-ubuntu20.04 AS base-12
+FROM nvidia/cuda:12.2.0-devel-ubuntu22.04 AS base-12
 
 # change default shell to bash
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -187,9 +172,9 @@ RUN set -ex \
         adduser \
         ca-certificates \
         git \
-        libomp-9-dev \
-        libstdc++-9-dev \
-        libtbb-dev \
+        libomp-13-dev \
+        libstdc++-12-dev \
+        libtbb2-dev \
         wget \
         nodejs \
         xclip \
