@@ -152,7 +152,7 @@ COPY patches /opt/xeus-cling-jupyter/patches/
 COPY make-xeus-cling-jupyter.sh /opt/xeus-cling-jupyter/
 
 RUN cd /opt/xeus-cling-jupyter \
-    && ./make-xeus-cling-jupyter.sh -rsxn 2 /opt/xeus-cling
+    && ./make-xeus-cling-jupyter.sh -rsxn 4 /opt/xeus-cling
 
 #-- xeus-cling-jupyter image ---------------------------------------------------
 
