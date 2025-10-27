@@ -1,7 +1,7 @@
 
 #!/usr/bin/env bash
 #
-# Copyright (c) 2024 Armin Sobhani (arminms@gmail.com)
+# Copyright (c) 2024-2025 Armin Sobhani (arminms@gmail.com)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -98,23 +98,23 @@ set -ex
 # build the Docker image if requested and exit
 if [ "x{$DOCKER}" = 1 ]; then
   if [ -z "${CUDA_KERNELS}" ]; then
-    docker build -t xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04 . \
+    docker build -t xeus-cling-jupyter:v1.0.0 -f docker/Dockerfile . \
     && cat << EOF
 
-Docker image 'xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04' has been successfully built.
-run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04' to start jupyter
+Docker image 'xeus-cling-jupyter:v1.0.0' has been successfully built.
+run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter:v1.0.0' to start jupyter
 
 EOF
   else
-    docker build --build-arg CUDA=10 -t xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04 . \
+    docker build --build-arg CUDA=10 -t xeus-cling-jupyter:v1.0.0-cuda -f docker/Dockerfile . \
     && cat << EOF
 
-Docker image 'xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04' has been successfully built.
+Docker image 'xeus-cling-jupyter:v1.0.0-cuda' has been successfully built.
 To run CUDA kernels, 'NVIDIA Container Toolkit' must have been installed on the host:
-
+  
 https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 
-run 'docker run --gpus=all -p 8888:8888 -it --rm xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04' to start jupyter
+run 'docker run --gpus=all -p 8888:8888 -it --rm xeus-cling-jupyter:v1.0.0-cuda' to start jupyter
 
 EOF
   fi
