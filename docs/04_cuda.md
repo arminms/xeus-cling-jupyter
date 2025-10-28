@@ -1,9 +1,9 @@
 ---
 subject: Xeus-Cling Quickstart Tutorial
 kernelspec:
-  name: xcpp17
-  display_name: C++17
-  language: C++17
+  name: xcpp14
+  display_name: C++14
+  language: C++14
 ---
 
 # Working with CUDA
@@ -11,7 +11,7 @@ kernelspec:
 Here's the same vector addition example the we used for <wiki:OpenMP> with <wiki:CUDA>.
 
 :::{tip} Choosing the right kernel 
-Make sure the selected kernel for the notebook is `C++17-CUDA`.
+Make sure the selected kernel for the notebook is `C++14-CUDA`.
 :::
 
 ```{code-cell} cpp

@@ -1,7 +1,7 @@
 
 #!/usr/bin/env bash
 #
-# Copyright (c) 2024 Armin Sobhani (arminms@gmail.com)
+# Copyright (c) 2024-2025 Armin Sobhani (arminms@gmail.com)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -98,23 +98,23 @@ set -ex
 # build the Docker image if requested and exit
 if [ "x{$DOCKER}" = 1 ]; then
   if [ -z "${CUDA_KERNELS}" ]; then
-    docker build -t xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04 . \
+    docker build -t xeus-cling-jupyter:v1.0.0 -f docker/Dockerfile . \
     && cat << EOF
 
-Docker image 'xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04' has been successfully built.
-run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-ubuntu20.04' to start jupyter
+Docker image 'xeus-cling-jupyter:v1.0.0' has been successfully built.
+run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter:v1.0.0' to start jupyter
 
 EOF
   else
-    docker build --build-arg CUDA=10 -t xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04 . \
+    docker build --build-arg CUDA=10 -t xeus-cling-jupyter:v1.0.0-cuda -f docker/Dockerfile . \
     && cat << EOF
 
-Docker image 'xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04' has been successfully built.
+Docker image 'xeus-cling-jupyter:v1.0.0-cuda' has been successfully built.
 To run CUDA kernels, 'NVIDIA Container Toolkit' must have been installed on the host:
-
+  
 https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 
-run 'docker run --gpus=all -p 8888:8888 -it --rm xeus-cling-jupyter:0.15.3-cling1.0dev-llvm13-cuda10.1-ubuntu20.04' to start jupyter
+run 'docker run --gpus=all -p 8888:8888 -it --rm xeus-cling-jupyter:v1.0.0-cuda' to start jupyter
 
 EOF
   fi
@@ -271,13 +271,15 @@ if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $BUILD_DIR/cling-build/bin
     git clone https://github.com/root-project/llvm-project.git
   fi
   cd llvm-project/
-  git checkout cling-llvm13
+  # git checkout cling-llvm13
+  git checkout cling-llvm16
   cd $BUILD_DIR
   if [ ! -d "cling" ]; then
     git clone https://github.com/root-project/cling.git
   fi
   cd cling/
-  git checkout acb2334131c19ef506767d6d9051b24755a8566b
+  # git checkout acb2334131c19ef506767d6d9051b24755a8566b
+  git checkout v1.1
   # patch to allow redefinition by default
   sed -i -e 's/AllowRedefinition(0)/AllowRedefinition(1)/g' include/cling/Interpreter/RuntimeOptions.h
   mkdir -p $BUILD_DIR/cling-build && cd $BUILD_DIR/cling-build
@@ -318,6 +320,10 @@ if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/bin/xcpp ]); 
     cd xeus-cling/
     git checkout 0.15.3
     # fix compilation errors with llvm13
+    sed -i -e 's/"--src-root")/)/g' CMakeLists.txt
+    sed -i -e 's/ect", H/ect", \&CI->getVirtualFileSystem(), H/g' src/xmagics/executable.cpp
+    sed -i -e 's/*Context/*m_interpreter.getLLVMContext()/g' src/xmagics/executable.cpp
+    sed -i -e 's/llvm::NoneType::None/std::nullopt/g' src/xmagics/executable.cpp
     sed -i -e 's/.getDataLayout();/.getDataLayoutString()/g' src/xmagics/executable.cpp
     sed -i -e 's/getDataLayoutString()/getDataLayoutString();/g' src/xmagics/executable.cpp
     sed -i -e 's/simplisticCastAs/castAs/g' src/xmagics/execution.cpp
@@ -329,7 +335,7 @@ if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/bin/xcpp ]); 
   else
     cd xeus-cling/
   fi
-  cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCling_DIR=$INSTALL_DIR/tools/cling/lib/cmake/cling
+  cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DCling_DIR=$BUILD_DIR/cling-build/tools/cling/lib/cmake/cling
   cmake --build build -j && cmake --install build
 fi
 

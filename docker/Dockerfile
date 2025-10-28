@@ -106,6 +106,39 @@ RUN set -ex \
     && jupytext-config set-default-viewer \
     && deactivate
 
+#-- xeus-cling image -----------------------------------------------------------
+
+FROM base AS xeus-cling
+
+# change default shell to bash
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# install build-essential and other dependencies
+RUN set -ex \
+    && apt-get update && apt-get upgrade -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        cmake \
+        git \
+        gnutls-dev \
+        libssl-dev \
+        nvidia-cuda-toolkit \
+        pkg-config \
+        uuid-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# install xeus-cling
+RUN cd /opt \
+    && mkdir -p xeus-cling-jupyter/kernels xeus-cling-jupyter/patches/
+
+COPY kernels /opt/xeus-cling-jupyter/kernels/
+COPY patches /opt/xeus-cling-jupyter/patches/
+COPY make-xeus-cling-jupyter.sh /opt/xeus-cling-jupyter/
+
+RUN cd /opt/xeus-cling-jupyter \
+    && ./make-xeus-cling-jupyter.sh -rsxn 4 /opt/xeus-cling
+
 #-- xeus-cling-jupyter image ---------------------------------------------------
 
 FROM base-${CUDA} AS xeus-cling-jupyter
@@ -147,12 +180,12 @@ RUN set -ex \
         xclip \
         xz-utils \
     && wget -qO- https://nodejs.org/dist/${node_version}/node-${node_version}-linux-x64.tar.xz | tar --strip-components=1 -xJ -C /usr/local \
-    && wget -qO- https://github.com/arminms/xeus-cling-jupyter/releases/download/v1.0.0/xeus-cling-jupyter-x86_64-linux-gnu.tar.xz | tar -x -C /opt \
     && mkdir -p /etc/jupyter \
     && rm -rf /var/lib/apt/lists/*
 
 # copy the venv and xeus-cling
 COPY --from=jupyter /opt/xeus-cling /opt/xeus-cling
+COPY --from=xeus-cling /opt/xeus-cling /opt/xeus-cling
 COPY docker/jupyter_server_config.py docker/docker_healthcheck.py /etc/jupyter/
 
 # remove the CUDA kernels if CUDA is not installed
