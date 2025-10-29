@@ -1,7 +1,7 @@
 name: MyST GitHub Pages Deploy
 on:
   release:
-    types: [published]
+    types: [published, edited]
 
   workflow_dispatch:
 
