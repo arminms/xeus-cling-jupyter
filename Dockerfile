@@ -147,7 +147,7 @@ RUN set -ex \
         xclip \
         xz-utils \
     && wget -qO- https://nodejs.org/dist/${node_version}/node-${node_version}-linux-x64.tar.xz | tar --strip-components=1 -xJ -C /usr/local \
-    && wget -qO- https://github.com/arminms/xeus-cling-jupyter/releases/download/v1.1.0/xeus-cling-jupyter-x86_64-linux-gnu.tar.xz | tar -xJ -C /opt \
+    && wget -qO- https://github.com/arminms/xeus-cling-jupyter/releases/latest/download/xeus-cling-jupyter-x86_64-linux-gnu.tar.xz | tar -xJ -C /opt \
     && mkdir -p /etc/jupyter \
     && rm -rf /var/lib/apt/lists/*
 
