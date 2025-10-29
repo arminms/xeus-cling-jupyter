@@ -1,4 +1,6 @@
-[![GitHub License](https://img.shields.io/github/license/arminms/xeus-cling-env?logo=github&logoColor=lightgrey&color=green)](https://github.com/arminms/xeus-cling-env/blob/main/LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/arminms/xeus-cling-jupyter?logo=github&logoColor=lightgray)](https://github.com/arminms/xeus-cling-jupyter/releases)
+[![GitHub License](https://img.shields.io/github/license/arminms/xeus-cling-jupyter?logo=github&logoColor=lightgrey&color=green)](https://github.com/arminms/xeus-cling-jupyter/blob/main/LICENSE)
+[![Docker](https://github.com/arminms/xeus-cling-jupyter/actions/workflows/ghcr.yml/badge.svg)](https://github.com/arminms/xeus-cling-jupyter/actions/workflows/ghcr.yml)
 [![MyST GitHub Pages Deploy](https://github.com/arminms/xeus-cling-jupyter/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/arminms/xeus-cling-jupyter/actions/workflows/gh-pages.yml)
 [![Static Badge](https://img.shields.io/badge/view-documentation-orange?style=flat&logo=github&logoColor=lightgray)](https://armin.sobhani.me/xeus-cling-jupyter/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/arminms/xeus-cling-jupyter/HEAD)
