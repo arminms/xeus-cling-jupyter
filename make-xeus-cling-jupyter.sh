@@ -98,23 +98,23 @@ set -ex
 # build the Docker image if requested and exit
 if [ "x{$DOCKER}" = 1 ]; then
   if [ -z "${CUDA_KERNELS}" ]; then
-    docker build -t xeus-cling-jupyter:v1.0.0 -f docker/Dockerfile . \
+    docker build -t xeus-cling-jupyter:dev -f docker/Dockerfile . \
     && cat << EOF
 
-Docker image 'xeus-cling-jupyter:v1.0.0' has been successfully built.
-run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter:v1.0.0' to start jupyter
+Docker image 'xeus-cling-jupyter:dev' has been successfully built.
+run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter:dev' to start jupyter
 
 EOF
   else
-    docker build --build-arg CUDA=10 -t xeus-cling-jupyter:v1.0.0-cuda -f docker/Dockerfile . \
+    docker build --build-arg CUDA=10 -t xeus-cling-jupyter:dev-cuda -f docker/Dockerfile . \
     && cat << EOF
 
-Docker image 'xeus-cling-jupyter:v1.0.0-cuda' has been successfully built.
+Docker image 'xeus-cling-jupyter:dev-cuda' has been successfully built.
 To run CUDA kernels, 'NVIDIA Container Toolkit' must have been installed on the host:
   
 https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 
-run 'docker run --gpus=all -p 8888:8888 -it --rm xeus-cling-jupyter:v1.0.0-cuda' to start jupyter
+run 'docker run --gpus=all -p 8888:8888 -it --rm xeus-cling-jupyter:dev-cuda' to start jupyter
 
 EOF
   fi
