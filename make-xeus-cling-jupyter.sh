@@ -366,6 +366,18 @@ if [ ! -z "${EXTRA_LIBS}" ] ; then
     cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
     cmake --build build -j $N && cmake --install build
   fi
+  # xsimd 11.2.0
+  #
+  if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/include/xsimd/xsimd.hpp ]); then
+    cd $BUILD_DIR
+    if [ ! -d "xsimd" ]; then
+      git clone https://github.com/xtensor-stack/xsimd.git
+    fi
+    cd xsimd/
+    git checkout 11.2.0
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
+    cmake --build build -j && cmake --install build
+  fi
   # xtensor 0.25.0
   #
   if [ -z "${RESUME}" ] || ([ $RESUME -eq 1 ] && [ ! -f $INSTALL_DIR/include/xtensor/xtensor.hpp ]); then
@@ -375,9 +387,9 @@ if [ ! -z "${EXTRA_LIBS}" ] ; then
     fi
     cd xtensor/
     git checkout 0.25.0
-    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
+    cmake -S . -B build -DCPP17=ON -DCPP20=ON -DXTENSOR_USE_OPENMP=ON -DXTENSOR_USE_XSIMD=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
     cmake --build build -j && cmake --install build
-  fi 
+  fi
 fi
 
 # install kernels to the current user's kernel registry if needed
