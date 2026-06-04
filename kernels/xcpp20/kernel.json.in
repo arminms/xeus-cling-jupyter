@@ -4,7 +4,8 @@
       "@XEUS_CLING_KERNELSPEC_PATH@/xcpp",
       "-f",
       "{connection_file}",
-      "-std=c++20"
+      "-std=c++20",
+      "-l/usr/lib/x86_64-linux-gnu/libtbb.so.2"
   ],
   "language": "C++20"
 }
