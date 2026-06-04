@@ -53,7 +53,7 @@ N=2
 
 # parse the command line arguments
 #
-while getopts ":b:cgkn:rsx" o; do
+while getopts ":b:cdgkn:rsx" o; do
     case "${o}" in
         b)
             BUILD_DIR=$(realpath ${OPTARG})
@@ -106,7 +106,7 @@ run 'docker run -p 8888:8888 -it --rm xeus-cling-jupyter:dev' to start jupyter
 
 EOF
   else
-    docker build --build-arg CUDA=10 -t xeus-cling-jupyter:dev-cuda -f docker/Dockerfile . \
+    docker build --build-arg CUDA=11 -t xeus-cling-jupyter:dev-cuda -f docker/Dockerfile . \
     && cat << EOF
 
 Docker image 'xeus-cling-jupyter:dev-cuda' has been successfully built.
