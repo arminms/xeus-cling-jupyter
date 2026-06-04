@@ -5,7 +5,9 @@
       "-f",
       "{connection_file}",
       "-std=c++20",
-      "-fopenmp"
+      "-fopenmp",
+      "-I/usr/lib/llvm-13/lib/clang/13.0.1/include",
+      "-l/usr/lib/llvm-13/lib/libomp.so.5"
   ],
   "language": "C++20"
 }
