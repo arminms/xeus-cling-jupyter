@@ -138,12 +138,14 @@ RUN set -ex \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         adduser \
         ca-certificates \
+        locales \
+        ncurses-term \
         git \
         libomp-13-dev \
         libstdc++-12-dev \
         libtbb2-dev \
+        zlib1g-dev \
         wget \
-        nodejs \
         xclip \
         xz-utils \
     && wget -qO- https://nodejs.org/dist/${node_version}/node-${node_version}-linux-x64.tar.xz | tar --strip-components=1 -xJ -C /usr/local \
@@ -174,6 +176,9 @@ USER ${NB_UID}
 # expose the jupyter-lab port
 ENV JUPYTER_PORT=8888
 EXPOSE $JUPYTER_PORT
+
+# set the TERM
+ENV TERM=xterm-256color
 
 # set the working directory
 WORKDIR ${HOME}
